@@ -176,7 +176,7 @@ ggplot(plot1_df, aes(x = year, y = mean_tmax, group = id, color = id)) +
   scale_x_continuous(breaks = plot1_df$year)
 ```
 
-Make a two panel plot showing tmax vs tmin for the full dataset, and a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year
+Make a two panel plot showing tmax vs tmin for the full dataset.
 
 ```{r}
 plot2_df = 
@@ -186,4 +186,18 @@ plot2_df =
 ggplot(plot2_df, aes(x = tmin, y = tmax)) +
          geom_hex()
 ```
+
+Make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
+
+```{r}
+plot3_df = 
+  ny_noaa_df %>%
+  subset(0 < snow & snow < 100)
+
+ggplot(plot3_df, aes(x = year, y = snow)) +
+  geom_point() +
+  labs(title = "Distribution of snowfall(in) per year", x = "year", y = "snowfall (in)") +
+  theme(axis.text.x = element_text(angle = 270, vjust = 0.5, hjust = 1))
+```
+
 
