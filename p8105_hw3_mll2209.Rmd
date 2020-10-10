@@ -84,3 +84,24 @@ instacart %>%
   )
 ```
 
+###Problem 2
+
+Import, read, and tidy the dataset.
+
+```{r}
+accel_df = 
+  read_csv("./data/accel_data.csv") %>%
+  janitor::clean_names() %>%
+  pivot_longer(
+    activity_1:activity_1440,
+    names_to = "activity_count",
+    values_to = "min_of_day") %>%
+  mutate(
+    day_type = 
+      case_when(
+        day %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday") ~ "weekday",
+        day %in% c("Saturday", "Sunday") ~ "weekend"))
+```
+
+
+
