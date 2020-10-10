@@ -183,7 +183,9 @@ plot2_df =
   ny_noaa_df %>%
   drop_na(tmax, tmin)
 
+plot2 = 
 ggplot(plot2_df, aes(x = tmin, y = tmax)) +
+      labs(title = "Minimum temperature vs maximum temperature", x = "minimum temperature (C)", y = "maximum temperature (C)") +
          geom_hex()
 ```
 
@@ -194,10 +196,17 @@ plot3_df =
   ny_noaa_df %>%
   subset(0 < snow & snow < 100)
 
+plot3 = 
 ggplot(plot3_df, aes(x = year, y = snow)) +
   geom_point() +
   labs(title = "Distribution of snowfall(in) per year", x = "year", y = "snowfall (in)") +
   theme(axis.text.x = element_text(angle = 270, vjust = 0.5, hjust = 1))
 ```
 
+Patch them together!
+
+```{r}
+library(patchwork)
+plot2 + plot3
+```
 
