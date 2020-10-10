@@ -94,9 +94,9 @@ accel_df =
   janitor::clean_names() %>%
   pivot_longer(
     activity_1:activity_1440,
-    names_to = "activity_count",
+    names_to = "min_of_day",
     names_prefix = "activity_",
-    values_to = "min_of_day") %>%
+    values_to = "activity_count") %>%
   mutate(
     day_type = 
       case_when(
@@ -105,19 +105,31 @@ accel_df =
   mutate(
     day = as.factor(day),
     day_type = as.factor(day_type),
-    activity_count = as.numeric(activity_count))
+    min_of_day = as.numeric(min_of_day)) %>%
+  mutate(
+    day = factor(day, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")))
+
 ```
 
 
 Aggregate across minutes to create a total activity for each day. Create table that shows this. 
 
 ```{r}
+table1 = 
 accel_df %>%
-  group_by(day_id) %>%
-  summarize(min_of_day = sum(min_of_day)) %>%
+  group_by(week,day) %>%
+  summarize(activity_count = sum(activity_count)) %>%
   knitr::kable()
 ```
 
+Make plot that shows 24-hour activity time courses for each day and use color to indicate day of the week. 
+
+```{r}
+ggplot(accel_df, aes(x = min_of_day, y = activity_count, color = day)) +
+  stat_smooth()+
+  geom_point() +
+  geom_line()
+```
 
 
 
