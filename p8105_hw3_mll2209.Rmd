@@ -95,13 +95,29 @@ accel_df =
   pivot_longer(
     activity_1:activity_1440,
     names_to = "activity_count",
+    names_prefix = "activity_",
     values_to = "min_of_day") %>%
   mutate(
     day_type = 
       case_when(
         day %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday") ~ "weekday",
-        day %in% c("Saturday", "Sunday") ~ "weekend"))
+        day %in% c("Saturday", "Sunday") ~ "weekend")) %>%
+  mutate(
+    day = as.factor(day),
+    day_type = as.factor(day_type),
+    activity_count = as.numeric(activity_count))
 ```
+
+
+Aggregate across minutes to create a total activity for each day. Create table that shows this. 
+
+```{r}
+accel_df %>%
+  group_by(day_id) %>%
+  summarize(min_of_day = sum(min_of_day)) %>%
+  knitr::kable()
+```
+
 
 
 
