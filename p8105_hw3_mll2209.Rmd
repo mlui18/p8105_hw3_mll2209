@@ -137,16 +137,20 @@ accel_df %>%
 ```
 For this graph, I took the average of each activity county for each minute of each weekday (Monday, Tuesday, etc.), and plotted that against minutes of the day, and connected the lines based off of each of the 35 days in order to make it easier to interpret. 
 
-Based off of this graph I can see that Sundays and Fridays have the highest activity of the week, with Sundays having higher activity in the middle of the day, and Fridays having higher activity in the evening. There is low activity in the first third of the day, with activity also increasing at the end of the day. Mondays through Thursdays and Saturdays all seem to have relatively lower activity compared to Fridays and Saturdays. 
+Based off of this graph I can see that Sundays and Fridays have the highest activity of the week, with Sundays having higher activity in the middle of the day, and Fridays having higher activity in the evening. There is low activity in the first third of the day, with activity also decreasing at the end of the day. Mondays through Thursdays and Saturdays all seem to have relatively lower activity compared to Fridays and Saturdays. 
 
 ###Problem 3
 
 Import and clean data. Convert precipitation, snow depth, and snowfall to inches, and tmax and tmin to degrees C.
-
 ```{r}
 library(p8105.datasets)
 data("ny_noaa")
+summary(ny_noaa)
+```
+In this dataset there are `r nrow(ny_noaa)` observations, and `r ncol(ny_noaa)` variables, which consist of `r names(ny_noaa)`. There is quite of bit of missing data, with prcp missing 145838 observations, snow missing 381221, and snwd missing 591786. Id, tmax, tmin are in the character format, date is in the date format, and prcp, snow, and snwd are in the integer format. 
 
+
+```{r}
 ny_noaa_df = 
   ny_noaa %>%
     separate(date, sep="-", into = c("year", "month", "day")) %>%
@@ -157,7 +161,11 @@ ny_noaa_df =
       tmin = tmin / 10,
       prcp = prcp * .003937,
       snow = snow * .03937,
-      snwd = snwd * .03937)
+      snwd = snwd * .03937) 
+ 
+sort_df = 
+  ny_noaa_df %>%
+  count(snow, sort = TRUE)
 ```
 For this dataset, I divided the tmin and tmax by 10, so that temperature would be reported as degrees Celsius rather than tenths of a degree Celsius. I also multiplied snow and snwd by .03937, because this is the conversion factor from mm to inches, and I believe rain and snow are usually reported in inches. I multiplied prcp by .003937 because it was originally reported as tenths of a mm, and I wanted to report it as inches. 
 
@@ -210,7 +218,7 @@ plot3_df =
 
 plot3 = 
 ggplot(plot3_df, aes(x = year, y = snow)) +
-  geom_point() +
+  geom_violin() +
   labs(title = "Distribution of snowfall(in) per year", x = "year", y = "snowfall (in)") +
   theme(axis.text.x = element_text(angle = 270, vjust = 0.5, hjust = 1))
 ```
@@ -219,6 +227,6 @@ Patch them together!
 
 ```{r}
 library(patchwork)
-plot2 + plot3
+plot2 / plot3
 ```
 
